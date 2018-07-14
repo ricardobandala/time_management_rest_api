@@ -1,7 +1,7 @@
 import falcon
 from content import ContentTypeComponent
 from db import DatabaseComponent
-# from resources import v1
+from resource import user
 
 
 class App(falcon.API):
@@ -15,3 +15,5 @@ class App(falcon.API):
             self.database_component,
             self.content_type_component
         ])
+
+        self.add_route('/user/{user_id:int}', user.Item())
