@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-class DatabaseComponent:
+class Database:
     def __init__(self):
         self.engine = create_engine('sqlite:///time_management.db')
         self.Session = sessionmaker(bind=self.engine)
