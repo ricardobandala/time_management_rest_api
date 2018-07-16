@@ -1,15 +1,17 @@
-from .time_block import TimeBlock as TimeBlockModel
-from .time_block_category import TimeBlockCategory as TimeBlockCategoryModel
-from .time_block_note import TimeBlockNote as TimeBlockNoteModel
-from .user import User as UserModel
-from .user_profile import UserProfile as UserProfileModel
-from .workday import Workday as WorkdayModel
+# from .time_block import TimeBlockModel
+# from .time_block_category import TimeBlockCategoryModel
+# from .time_block_note import TimeBlockNoteModel
+from .user import UserModel
+from .user_login import UserLoginModel
+from .user_profile import UserProfileModel
+# from .workday import WorkdayModel
 
 __slots__ = [
-    TimeBlockModel,
-    TimeBlockCategoryModel,
-    TimeBlockNoteModel,
+    # TimeBlockModel,
+    # TimeBlockCategoryModel,
+    # TimeBlockNoteModel,
     UserModel,
+    UserLoginModel,
     UserProfileModel,
-    WorkdayModel
+    # WorkdayModel
 ]

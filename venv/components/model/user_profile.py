@@ -1,16 +1,19 @@
-from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey
+from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
-from base import Base
+from base import DeclarativeBase
 
 
-class UserProfile(Base):
+class UserProfileModel(DeclarativeBase):
     __tablename__ = 'user_profile'
     __table_args__ = {'extend_existing': True}
-    id = Column(Integer, primary_key=True)
+
+    id = Column(Integer, primary_key=True, nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='user_profile')
+    email = Column(String(255))
+
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user = relationship('UserModel', back_populates='user_profile', lazy="joined")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
