@@ -1,10 +1,11 @@
 from sqlalchemy import create_engine
-from base import Base
+from base import DeclarativeBase
 from sqlalchemy.orm import sessionmaker
-from model import *
+from db import Database
+from model import UserModel, UserProfileModel, UserLoginModel
 
-engine = create_engine('sqlite:///time_management.db')
+engine = create_engine(Database.URL)
 
 Session = sessionmaker()
 Session.configure(bind=engine)
-Base.metadata.create_all(engine)
+DeclarativeBase.metadata.create_all(engine)
