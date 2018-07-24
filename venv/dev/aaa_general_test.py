@@ -65,39 +65,39 @@ session.add_all([
     # Abstract
 
     # TIME BLOCK ###############################################
-    ResourceModel(route='/time_block/', action='POST', is_active=True),
-    ResourceModel(route='/time_block/{time_block_id:int}', action='GET', is_active=True),
-    ResourceModel(route='/time_block/{time_block_id:int}', action='PUT', is_active=True),
-    ResourceModel(route='/time_block/{time_block_id:int}', action='DELETE', is_active=True),
+    ResourceModel(route='/timeframe/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe/{timeframe_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/timeframe/{timeframe_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe/{timeframe_id:int}', action='DELETE', is_active=True),
 
-    # ResourceModel(route='/time_block/', action='POST', is_active=True),
-    ResourceModel(route='/time_block/', action='GET', is_active=True),
-    ResourceModel(route='/time_block/', action='PUT', is_active=True),
-    ResourceModel(route='/time_block/', action='DELETE', is_active=True),
+    # ResourceModel(route='/timeframe/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe/', action='GET', is_active=True),
+    ResourceModel(route='/timeframe/', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe/', action='DELETE', is_active=True),
     # Abstract
 
     # TIME BLOCK NOTE ###############################################
-    ResourceModel(route='/time_block_note/', action='POST', is_active=True),
-    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='GET', is_active=True),
-    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='PUT', is_active=True),
-    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='DELETE', is_active=True),
+    ResourceModel(route='/timeframe_note/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe_note/{timeframe_note_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/timeframe_note/{timeframe_note_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe_note/{timeframe_note_id:int}', action='DELETE', is_active=True),
 
-    # ResourceModel(route='/time_block_note/', action='POST', is_active=True),
-    ResourceModel(route='/time_block_note/', action='GET', is_active=True),
-    ResourceModel(route='/time_block_note/', action='PUT', is_active=True),
-    ResourceModel(route='/time_block_note/', action='DELETE', is_active=True),
+    # ResourceModel(route='/timeframe_note/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe_note/', action='GET', is_active=True),
+    ResourceModel(route='/timeframe_note/', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe_note/', action='DELETE', is_active=True),
     # Abstract
 
     # TIME BLOCK CATEGORY ###############################################
-    ResourceModel(route='/time_block_category/', action='POST', is_active=True),
-    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='GET', is_active=True),
-    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='PUT', is_active=True),
-    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='DELETE', is_active=True),
+    ResourceModel(route='/timeframe_category/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe_category/{timeframe_category_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/timeframe_category/{timeframe_category_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe_category/{timeframe_category_id:int}', action='DELETE', is_active=True),
 
-    # ResourceModel(route='/time_block_category/', action='POST', is_active=True),
-    ResourceModel(route='/time_block_category/', action='GET', is_active=True),
-    ResourceModel(route='/time_block_category/', action='PUT', is_active=True),
-    ResourceModel(route='/time_block_category/', action='DELETE', is_active=True)
+    # ResourceModel(route='/timeframe_category/', action='POST', is_active=True),
+    ResourceModel(route='/timeframe_category/', action='GET', is_active=True),
+    ResourceModel(route='/timeframe_category/', action='PUT', is_active=True),
+    ResourceModel(route='/timeframe_category/', action='DELETE', is_active=True)
     # Abstract
 ])
 
@@ -112,15 +112,15 @@ session.commit()
 #     password='selfdestructive',
 #     is_active=0
 # )
-# user_profile = UserProfileModel(
+# user_profile = IdentityModel(
 #     first_name='Peter',
 #     last_name='Funk'
 # )
 # workday = WorkdayModel()
-# time_block = TimeBlockModel()
-# time_block_note = TimeBlockNoteModel()
+# timeframe = TimeframeModel()
+# timeframe_note = TimeframeNoteModel()
 
-# time_block.time_block_note = [time_block_note]
+# timeframe.timeframe_note = [timeframe_note]
 # workday.time_block = [time_block]
 # user.workday = [workday]
 # user.user_profile = [user_profile]
@@ -132,13 +132,13 @@ session.commit()
 #     password='ihatemac',
 #     is_active=1
 # )
-# user_profile = UserProfileModel(
+# user_profile = IdentityModel(
 #     first_name='Bill',
 #     last_name='Gates'
 # )
 # workday = WorkdayModel()
-# time_block = TimeBlockModel()
-# time_block_note = TimeBlockNoteModel()
+# time_block = TimeframeModel()
+# time_block_note = TimeframeNoteModel()
 #
 # user.time_block = [time_block]
 # user.time_block_note = [time_block_note]
@@ -161,7 +161,7 @@ session.commit()
 #     password='asfdfnbnbsd',
 #     is_active=1
 # )
-# user_profile = UserProfileModel(
+# user_profile = IdentityModel(
 #     first_name='Scott',
 #     last_name='Pilgrim2'
 # )
@@ -175,12 +175,12 @@ session.commit()
 #user = UserModel(
 #    is_active=True
 #)
-#user.user_login = UserLoginModel(
+#user.user_login = CredentialModel(
 #    username='ricardobandala',
 #    password='123456789',
 #    is_active=1,
 #)
-#user.user_profile = UserProfileModel(
+#user.user_profile = IdentityModel(
 #    first_name='Ricardo',
 #    last_name='Bandala',
 #    email='ricardobandala@pagefolio.com'

@@ -6,36 +6,44 @@ from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 
 
-class UserPermissionModel(DeclarativeBase):
-    __tablename__ = 'user_permission'
+class CredentialModel(DeclarativeBase):
+    __tablename__ = 'credential'
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    resource_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    # TODO composed contraint key
+    username = Column(String(255), nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    is_active = Column(Boolean, default=0)
 
-    resource = relationship('ResourceModel', ForeignKey('resource.id'), nullable=False)
+    # ONE TO ONE
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user = relationship('UserModel', back_populates='user_login', lazy="joined")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
 
     def __repr__(self):
-        return "<UserLogin(id={:d}, username={}, is_active={:d}, created={}, modified={}, deleted={} )>"\
-               .format(
-                   self.id,
-                   self.username,
-                   self.is_active,
-                   self.created,
-                   self.modified,
-                   self.deleted
-               )
-
+        return """<
+        UserLogin(
+            id={:d}, 
+            username={}, 
+            is_active={:d}, 
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+           self.id,
+           self.username,
+           self.is_active,
+           self.created,
+           self.modified,
+           self.deleted
+        )
 
 
 listen(
-    UserLoginModel.password,
+    CredentialModel.password,
     'set',
     lambda target, value, oldvalue, initiator: base64.b64encode(value.encode('utf-8')),
     # TODO verify if this logic to check if is encoded before encode
@@ -46,7 +54,7 @@ listen(
 
 
 
-# class UserLoginSchema:
+# class CredentialSchema:
 #
 #     id = fields.Integer()
 #     username = fields.String()

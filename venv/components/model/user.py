@@ -15,32 +15,46 @@ class UserModel(DeclarativeBase):
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, nullable=False)
-    is_active = Column(Boolean)
+    is_active = Column(Boolean, default=True, nullable=False)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
 
-    user_login = relationship('UserLoginModel', back_populates='user', lazy="joined", uselist=False)
-    user_profile = relationship('UserProfileModel', back_populates='user', lazy="joined", uselist=False)
+    # ONE TO ONE
+    credential = relationship('CredentialModel', back_populates='user', lazy="joined", uselist=False)
+    identity = relationship('IdentityModel', back_populates='user', lazy="joined", uselist=False)
 
-    # workday = relationship('Workday', back_populates='user')
-    # time_block = relationship('TimeBlock', back_populates='user')
+    # ONE TO MANY
+    workday = relationship('WorkdayModel', back_populates='user', uselist=True)
+    workday_note = relationship('WorkdayNoteModel', back_populates='user', uselist=True)
+    timeframe = relationship('TimeframeModel', back_populates='user', uselist=True)
+    timeframe_note = relationship('TimeframeNoteModel', back_populates='user', uselist=True)
+
+    # MANY TO MANY
+    role = relationship(
+        'RoleModel',
+        secondary='assoc_user_role',
+        back_populates='user',
+        lazy="joined",
+        uselist=True
+    )
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
 
-class UserSchema(Schema):
 
-    id = fields.Integer()
-    is_active = fields.Boolean()
-    start_date = fields.DateTime()
-    end_date = fields.DateTime()
-
-    user_login = relationship('UserLoginModel', back_populates='user', lazy="joined", uselist=False)
-    user_profile = relationship('UserProfileModel', back_populates='user', lazy="joined", uselist=False)
-    # workday = relationship('Workday', back_populates='user')
-    # time_block = relationship('TimeBlock', back_populates='user')
-
-    created = fields.DateTime()
-    modified = fields.DateTime()
-    deleted = fields.DateTime()
+# class UserSchema(Schema):
+#
+#     id = fields.Integer()
+#     is_active = fields.Boolean()
+#     start_date = fields.DateTime()
+#     end_date = fields.DateTime()
+#
+#     user_login = relationship('CredentialModel', back_populates='user', lazy="joined", uselist=False)
+#     indentity = relationship('IdentityModel', back_populates='user', lazy="joined", uselist=False)
+#     # workday = relationship('Workday', back_populates='user')
+#     # timeframe = relationship('Timeframe', back_populates='user')
+#
+#     created = fields.DateTime()
+#     modified = fields.DateTime()
+#     deleted = fields.DateTime()

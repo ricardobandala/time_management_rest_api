@@ -1,7 +1,7 @@
 import falcon
 from content import ContentType
 from db import Database
-from auth import auth
+from auth import Authentication, Authorization
 # Resources for routes
 from resource import user
 
@@ -12,14 +12,15 @@ class App(falcon.API):
 
         self.database_component = Database()
         self.content_type_component = ContentType(content_type='application/json')
-        # TODO, add init parameters to config exemtions here
-        # self.auth = Auth(exempt_routes=['/login']).auth
-        self.auth = auth
+        self.authenticate = Authentication(exempt_routes=['/login'], exempt_methods=['HEAD']).authenticate()
+        self.policy = Authorization()
 
         super().__init__(middleware=[
             self.database_component,
             self.content_type_component,
-            self.auth
+            self.authenticate,
+            self.policy
         ])
 
         self.add_route('/user/{user_id:int}', user.Item())
+        self.add_route('/user/', user.Item())

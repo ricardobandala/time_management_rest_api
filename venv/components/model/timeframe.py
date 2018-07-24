@@ -3,8 +3,8 @@ from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 
 
-class TimeBlock(DeclarativeBase):
-    __tablename__ = 'time_block'
+class TimeframeModel(DeclarativeBase):
+    __tablename__ = 'timeframe'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
 
@@ -13,16 +13,25 @@ class TimeBlock(DeclarativeBase):
     interruptions = Column(Integer, default=0)
     failed = Column(Boolean)
 
-    time_block_note = relationship('TimeBlockNote', back_populates='time_block')
+    # ONE TO MANY
+    timeframe_note = relationship('TimeframeNoteModel', back_populates='timeframe', uselist=True)
 
+    # MANY TO ONE
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('Workday', back_populates='time_block')
+    workday = relationship('Workday', back_populates='timeframe')
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='time_block')
+    user = relationship('User', back_populates='timeframe')
 
-    category_id = Column(Integer, ForeignKey('time_block_category.id'))
-    category = relationship('TimeBlockCategory')
+    # MANY TO MANY
+    category = relationship(
+        'TimeframeCategoryModel',
+        secondary='assoc_timeframe_timeframe_category',
+        back_populates='timeframe',
+        lazy="joined",
+        uselist=True
+    )
+
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())

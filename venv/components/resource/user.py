@@ -6,7 +6,6 @@ from model.user import UserModel, UserSchema
 class Item:
 
     def on_get(self, req, resp, user_id):
-        resp.body = 'Oia'
         query = req.context['session'].query(UserModel)
         query = query.filter(UserModel.id == user_id)
         user = query.one_or_none()

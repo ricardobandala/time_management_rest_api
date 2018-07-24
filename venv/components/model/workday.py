@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 
 
-class Workday(DeclarativeBase):
+class WorkdayModel(DeclarativeBase):
     __tablename__ = 'workday'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
@@ -12,10 +12,13 @@ class Workday(DeclarativeBase):
     # TODO, how to do dateadd in SQLite
     stop_time = Column(DateTime)
 
+    # ONE TO MANY
+    timeframe = relationship('TimeframeModel', back_populates='workday', uselist=True)
+    note = relationship('WorkdayNoteModel', back_populates='workday', uselist=True)
+
+    # MANY TO ONE
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship('User', back_populates='workday')
-
-    time_block = relationship('TimeBlock', back_populates='workday')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
