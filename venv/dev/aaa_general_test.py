@@ -1,11 +1,108 @@
-from sqlalchemy import create_engine
-from base import DeclarativeBase
-from sqlalchemy.orm import sessionmaker
 from db import Database
-from model import UserModel, UserLoginModel, UserProfileModel
-import base64
+from model import *
 
 session = Database().Session()
+
+session.add_all([
+
+    # TODO Solve semantic problem POST no parameter for item or collection
+
+    # USER ###############################################
+    # Item
+    ResourceModel(route='/user/', action='POST', is_active=True),
+    ResourceModel(route='/user/{user_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/user/{user_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/user/{user_id:int}', action='DELETE', is_active=True),
+    # Collection
+
+    # ResourceModel(route='/user/', action='POST', is_active=True),
+    ResourceModel(route='/user/', action='GET', is_active=True),
+    ResourceModel(route='/user/', action='PUT', is_active=True),
+    ResourceModel(route='/user/', action='DELETE', is_active=True),
+    # Abstract
+
+
+    # USER LOGIN ###############################################
+    # Item
+    ResourceModel(route='/user_login/', action='POST', is_active=True),
+    ResourceModel(route='/user_login/{user_login_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/user_login/{user_login_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/user_login/{user_login_id:int}', action='DELETE', is_active=True),
+    # Collection
+
+    # ResourceModel(route='/user_login/', action='POST', is_active=True),
+    ResourceModel(route='/user_login/', action='GET', is_active=True),
+    ResourceModel(route='/user_login/', action='PUT', is_active=True),
+    ResourceModel(route='/user_login/', action='DELETE', is_active=True),
+    # Abstract
+
+    # USER PROFILE ###############################################
+    # Item
+    ResourceModel(route='/user_profile/', action='POST', is_active=True),
+    ResourceModel(route='/user_profile/{user_profile_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/user_profile/{user_profile_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/user_profile/{user_profile_id:int}', action='DELETE', is_active=True),
+    # Collection
+
+    # ResourceModel(route='/user_profile/', action='POST', is_active=True),
+    ResourceModel(route='/user_profile/', action='GET', is_active=True),
+    ResourceModel(route='/user_profile/', action='PUT', is_active=True),
+    ResourceModel(route='/user_profile/', action='DELETE', is_active=True),
+    # Abstract
+
+
+    # WORKDAY ###############################################
+    # Item
+    ResourceModel(route='/workday/', action='POST', is_active=True),
+    ResourceModel(route='/workday/{workday_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/workday/{workday_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/workday/{workday_id:int}', action='DELETE', is_active=True),
+    # Collection
+    # ResourceModel(route='/workday/', action='POST', is_active=True),
+    ResourceModel(route='/workday/', action='GET', is_active=True),
+    ResourceModel(route='/workday/', action='PUT', is_active=True),
+    ResourceModel(route='/workday/', action='DELETE', is_active=True),
+    # Abstract
+
+    # TIME BLOCK ###############################################
+    ResourceModel(route='/time_block/', action='POST', is_active=True),
+    ResourceModel(route='/time_block/{time_block_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/time_block/{time_block_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/time_block/{time_block_id:int}', action='DELETE', is_active=True),
+
+    # ResourceModel(route='/time_block/', action='POST', is_active=True),
+    ResourceModel(route='/time_block/', action='GET', is_active=True),
+    ResourceModel(route='/time_block/', action='PUT', is_active=True),
+    ResourceModel(route='/time_block/', action='DELETE', is_active=True),
+    # Abstract
+
+    # TIME BLOCK NOTE ###############################################
+    ResourceModel(route='/time_block_note/', action='POST', is_active=True),
+    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/time_block_note/{time_block_note_id:int}', action='DELETE', is_active=True),
+
+    # ResourceModel(route='/time_block_note/', action='POST', is_active=True),
+    ResourceModel(route='/time_block_note/', action='GET', is_active=True),
+    ResourceModel(route='/time_block_note/', action='PUT', is_active=True),
+    ResourceModel(route='/time_block_note/', action='DELETE', is_active=True),
+    # Abstract
+
+    # TIME BLOCK CATEGORY ###############################################
+    ResourceModel(route='/time_block_category/', action='POST', is_active=True),
+    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='GET', is_active=True),
+    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='PUT', is_active=True),
+    ResourceModel(route='/time_block_category/{time_block_category_id:int}', action='DELETE', is_active=True),
+
+    # ResourceModel(route='/time_block_category/', action='POST', is_active=True),
+    ResourceModel(route='/time_block_category/', action='GET', is_active=True),
+    ResourceModel(route='/time_block_category/', action='PUT', is_active=True),
+    ResourceModel(route='/time_block_category/', action='DELETE', is_active=True)
+    # Abstract
+])
+
+session.commit()
+
 
 ###################################################
 # Why this didn't work?
@@ -95,28 +192,3 @@ session = Database().Session()
 # u = 1
 
 
-from functools import wraps
-
-
-def handle_session(f):
-    def wrapper(*args, **kwargs):
-        try:
-            user = f(*args, **kwargs)
-        finally:
-            session.close()
-        return user
-    return wrapper
-
-
-@handle_session
-def use_loader(username, password):
-    user = session.query(UserLoginModel).filter(
-        UserLoginModel.username == username,
-        UserLoginModel.password == base64.b64encode(password.encode('utf-8'))
-    ).one_or_none()
-
-    return user
-
-
-yora = use_loader(username='ricardobandala', password='123456789')
-print(yora)
