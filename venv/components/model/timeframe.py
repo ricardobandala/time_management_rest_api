@@ -14,14 +14,14 @@ class TimeframeModel(DeclarativeBase):
     failed = Column(Boolean)
 
     # ONE TO MANY
-    timeframe_note = relationship('TimeframeNoteModel', back_populates='timeframe', uselist=True)
+    note = relationship('TimeframeNoteModel', back_populates='timeframe', uselist=True)
 
     # MANY TO ONE
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('Workday', back_populates='timeframe')
+    workday = relationship('WorkdayModel', back_populates='timeframe')
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='timeframe')
+    user = relationship('UserModel', back_populates='timeframe')
 
     # MANY TO MANY
     category = relationship(
@@ -32,7 +32,29 @@ class TimeframeModel(DeclarativeBase):
         uselist=True
     )
 
-
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        TimeframeModel(
+            id={:d}, 
+            start_time={}, 
+            stop_time={}, 
+            interruptions={:d},
+            failed={},
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+            self.id,
+            self.start_time,
+            self.stop_time,
+            self.interruptions,
+            self.failed,
+            self.created,
+            self.modified,
+            self.deleted
+        )
+

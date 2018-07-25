@@ -20,3 +20,24 @@ class WorkdayNoteModel(DeclarativeBase):
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        WorkdayNoteModel(
+            id={:d},  
+            content={}, 
+            workday_id={:d},
+            user_id={:d},
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+            self.id,
+            self.content,
+            self.workday_id,
+            self.user_id,
+            self.created,
+            self.modified,
+            self.deleted
+        )
+

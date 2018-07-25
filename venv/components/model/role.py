@@ -29,3 +29,23 @@ class RoleModel(DeclarativeBase):
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        IdentityModel(
+            id={:d}, 
+            name={}, 
+            is_active={},
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+            self.id,
+            self.name,
+            self.is_active,
+            self.created,
+            self.modified,
+            self.deleted
+        )
+
+

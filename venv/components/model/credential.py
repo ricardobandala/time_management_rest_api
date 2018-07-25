@@ -17,7 +17,7 @@ class CredentialModel(DeclarativeBase):
 
     # ONE TO ONE
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    user = relationship('UserModel', back_populates='user_login', lazy="joined")
+    user = relationship('UserModel', back_populates='credential', lazy="joined")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -25,7 +25,7 @@ class CredentialModel(DeclarativeBase):
 
     def __repr__(self):
         return """<
-        UserLogin(
+        CredentialModel(
             id={:d}, 
             username={}, 
             is_active={:d}, 

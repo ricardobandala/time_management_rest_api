@@ -18,3 +18,25 @@ class IdentityModel(DeclarativeBase):
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        IdentityModel(
+            id={:d}, 
+            first_name={}, 
+            last_name={}, 
+            email={},
+            user_id={},
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+            self.id,
+            self.first_name,
+            self.last_name,
+            self.email,
+            self.user_id,
+            self.created,
+            self.modified,
+            self.deleted
+        )

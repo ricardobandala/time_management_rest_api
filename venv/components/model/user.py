@@ -32,7 +32,7 @@ class UserModel(DeclarativeBase):
     # MANY TO MANY
     role = relationship(
         'RoleModel',
-        secondary='assoc_user_role',
+        secondary='user_role',
         back_populates='user',
         lazy="joined",
         uselist=True
@@ -41,6 +41,29 @@ class UserModel(DeclarativeBase):
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        UserModel(
+            id={:d}, 
+            is_active={}, 
+            start_date={}, 
+            end_date={},
+            role={},
+            created={}, 
+            modified={}, 
+            deleted={} 
+        )>""".format(
+            self.id,
+            self.is_active,
+            self.start_date,
+            self.end_date,
+            self.role,
+            self.created,
+            self.modified,
+            self.deleted
+        )
+
 
 
 # class UserSchema(Schema):

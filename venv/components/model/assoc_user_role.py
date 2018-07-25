@@ -8,7 +8,7 @@ class UserRoleModel(DeclarativeBase):
     __table_args__ = {'extend_existing': True}
 
     user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-    role_id = Column(Integer, ForeignKey('resource.id'), primary_key=True)
+    role_id = Column(Integer, ForeignKey('role.id'), primary_key=True)
 
     def __repr__(self):
         return """

@@ -23,3 +23,13 @@ class TimeframeCategoryModel(DeclarativeBase):
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def __repr__(self):
+        return """<
+        TimeframeCategoryModel(
+            id={:d}, 
+            name={} 
+        )>""".format(
+            self.id,
+            self.name
+        )
