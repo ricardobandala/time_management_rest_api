@@ -30,6 +30,13 @@ policy_config = {
             'PATCH': ['general_management'],
             'DELETE': ['general_management'],
         },
+        '/users/': {
+            # TODO, ask Leigh valid operations on collections
+            'GET': ['general_management'],
+            'POST': ['general_management'],
+            'PATCH': ['general_management'],
+            'DELETE': ['general_management'],
+        },
         '/credential/own/{user_id:int}': {
             'GET': ['self_management'],
             'PUT': ['self_management'],
@@ -55,6 +62,9 @@ policy_config = {
             'PATCH': ['self_management'],
             'DELETE': ['general_management'],
         },
+        # '/profile/mark-deleted/{user_id:int}': {
+        #     'PATCH': ['general_management'],
+        # },
         # '/timeframe/': {
         #     'POST': ['@any_role'],
         # },
