@@ -16,10 +16,10 @@ class Timeframe(DeclarativeBase):
     timeframe_note = relationship('TimeframeNoteModel', back_populates='timeframe')
 
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('Workday', back_populates='timeframe')
+    workday = relationship('WorkdayModel', back_populates='timeframe')
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='timeframe')
+    user = relationship('UserModel', back_populates='timeframe')
 
     category_id = Column(Integer, ForeignKey('timeframe_category.id'))
     category = relationship('TimeframeCategory')

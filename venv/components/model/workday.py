@@ -18,7 +18,7 @@ class WorkdayModel(DeclarativeBase):
 
     # MANY TO ONE
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='workday')
+    user = relationship('UserModel', back_populates='workday')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())

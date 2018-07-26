@@ -31,15 +31,11 @@ class RoleModel(DeclarativeBase):
     deleted = Column(DateTime)
 
     def __repr__(self):
-        return """<
-        IdentityModel(
-            id={:d}, 
-            name={}, 
-            is_active={},
-            created={}, 
-            modified={}, 
-            deleted={} 
-        )>""".format(
+        return (
+            "< RoleModel("
+            "id={:d}, name={}, is_active={}, "
+            "created={}, modified={}, deleted={})>"
+        ).format(
             self.id,
             self.name,
             self.is_active,

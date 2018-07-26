@@ -14,7 +14,7 @@ class TimeframeNoteModel(DeclarativeBase):
     timeframe = relationship('Timeframe', back_populates='timeframe_note')
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User')
+    user = relationship('UserModel')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())

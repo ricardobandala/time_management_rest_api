@@ -13,7 +13,7 @@ class Workday(DeclarativeBase):
     stop_time = Column(DateTime)
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='workday')
+    user = relationship('UserModel', back_populates='workday')
 
     timeframe = relationship('Timeframe', back_populates='workday')
 

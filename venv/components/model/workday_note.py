@@ -12,10 +12,10 @@ class WorkdayNoteModel(DeclarativeBase):
 
     # MANY TO ONE
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('Workday', back_populates='note', uselist=False)
+    workday = relationship('WorkdayModel', back_populates='note', uselist=False)
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='workday_note', uselist=False)
+    user = relationship('UserModel', back_populates='workday_note', uselist=False)
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
