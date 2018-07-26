@@ -18,13 +18,7 @@ class RoleModel(DeclarativeBase):
     name = Column(Enum(RoleName), unique=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
 
-    user = relationship(
-        'UserModel',
-        secondary='assoc_user_role',
-        back_populates='role',
-        lazy="joined",
-        uselist=True
-    )
+    user = relationship('UserModel', back_populates='role')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())

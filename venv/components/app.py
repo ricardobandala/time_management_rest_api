@@ -13,13 +13,13 @@ class App(falcon.API):
         self.database_component = Database()
         self.content_type_component = ContentType(content_type='application/json')
         self.authenticate = Authentication(exempt_routes=['/login'], exempt_methods=['HEAD']).authenticate()
-        self.policy = Authorization()
+        self.authorize = Authorization()
 
         super().__init__(middleware=[
             self.database_component,
             self.content_type_component,
             self.authenticate,
-            self.policy
+            self.authorize
         ])
 
         self.add_route('/user/{user_id:int}', user.Item())

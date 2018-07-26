@@ -2,7 +2,6 @@ import base64
 from falcon_auth import FalconAuthMiddleware, BasicAuthBackend
 from falcon_policy import RoleBasedPolicy
 from policy import policy_config
-from model.credential import CredentialModel
 from model.user import UserModel
 from model.credential import CredentialModel
 from db import Database
@@ -34,12 +33,13 @@ class Authentication(object):
 
         @session_handler
         def user_loader(username: str, password: str):
-            user = session.query(CredentialModel).filter(
+
+            credential = session.query(CredentialModel.user_id).filter(
                 CredentialModel.username == username,
                 CredentialModel.password == base64.b64encode(password.encode('utf-8'))
-            ).one_or_none()
+            ).one()
 
-            return user
+            return credential
 
         return FalconAuthMiddleware(
             BasicAuthBackend(user_loader),
@@ -56,11 +56,11 @@ class Authorization(object):
             self.roles_header = roles
             self.provided_roles = [role.strip() for role in self.roles_header.split(',')]
 
-    def process_request(self, req, resp):
+    def process_resource(self, req, resp, resource, params):
 
-        roles = req.context['session'].query(UserModel.role).filter(
-            UserModel.id == req.context['user'].id
+        roles = req.context['session'].query(UserModel).filter(
+            UserModel.id == req.context['user'].user_id
         ).one_or_none()
 
-        RoleBasedPolicy(policy_config).process_resource(self.RequestObject(req.context.url, roles))
+        RoleBasedPolicy(policy_config).process_resource(self.RequestObject(req.context.url, roles, ), resp, resource, params)
 
