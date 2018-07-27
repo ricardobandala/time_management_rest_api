@@ -1,10 +1,13 @@
 import base64
+import falcon
 from falcon_auth import FalconAuthMiddleware, BasicAuthBackend
 from falcon_policy import RoleBasedPolicy
 from policy import policy_config
 from model.user import UserModel
+from model.role import RoleModel
 from model.credential import CredentialModel
 from db import Database
+from sqlalchemy.orm import contains_eager
 
 session = Database().Session()
 
@@ -50,17 +53,24 @@ class Authentication(object):
 
 class Authorization(object):
 
-    class RequestObject(object):
-        def __init__(self, route: str, roles: str):
-            self.route = route
-            self.roles_header = roles
-            self.provided_roles = [role.strip() for role in self.roles_header.split(',')]
-
     def process_resource(self, req, resp, resource, params):
 
-        roles = req.context['session'].query(UserModel).filter(
+        user = req.context['session'].query(UserModel).filter(
             UserModel.id == req.context['user'].user_id
         ).one_or_none()
 
-        RoleBasedPolicy(policy_config).process_resource(self.RequestObject(req.context.url, roles, ), resp, resource, params)
+        # TODO, how can I modify the header
+        # req.headers.update({'X-ROLES': getattr(user.role.name, 'name', '')})
+
+        if not req.get_header('X-Roles', default='') == user.get_role():
+            raise falcon.HTTPForbidden(
+                description='Access to this resource has been restricted'
+            )
+
+        RoleBasedPolicy(policy_config).process_resource(
+            req,
+            resp,
+            resource,
+            params
+        )
 

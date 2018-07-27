@@ -25,16 +25,20 @@ class UserModel(DeclarativeBase):
     # ONE TO MANY
     workday = relationship('WorkdayModel', back_populates='user', uselist=True)
     workday_note = relationship('WorkdayNoteModel', back_populates='user', uselist=True)
+
     timeframe = relationship('TimeframeModel', back_populates='user', uselist=True)
     timeframe_note = relationship('TimeframeNoteModel', back_populates='user', uselist=True)
 
     # MANY TO ONE
     role_id = Column(Integer, ForeignKey('role.id'))
-    role = relationship('RoleModel', back_populates='user')
+    role = relationship('RoleModel', back_populates='user', uselist=False)
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
+
+    def get_role(self):
+        return self.role.title.name
 
     def __repr__(self):
         return """" <UserModel(

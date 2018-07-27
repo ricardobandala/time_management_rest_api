@@ -5,9 +5,13 @@ import enum
 
 
 class RoleName(enum.Enum):
-    admin = 1
-    reporter = 2
-    observer = 3
+    admin = 'admin'
+    reporter = 'reporter'
+    observer = 'observer'
+
+# TODO, check why this is not working, implementation as described in the docs
+def enum_values(enum_class):
+    return [e.value for e in enum_class]
 
 
 class RoleModel(DeclarativeBase):
@@ -15,7 +19,7 @@ class RoleModel(DeclarativeBase):
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(Enum(RoleName), unique=True, nullable=False)
+    title = Column(Enum(RoleName, values_callable=enum_values), unique=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
 
     user = relationship('UserModel', back_populates='role')
@@ -37,5 +41,3 @@ class RoleModel(DeclarativeBase):
             self.modified,
             self.deleted
         )
-
-
