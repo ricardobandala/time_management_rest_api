@@ -8,5 +8,13 @@
 GET http://localhost:8181/user/1
 Accept: application/json
 Authorization: Basic cmljYXJkb2JhbmRhbGE6MTIzNDU2Nzg5
+X-Roles: reporter
+
+
+#
+# GET http://localhost:8181/user/1
+# Accept: application/json
+# Authorization: Basic <Create Base request for admin user >
+# X-Roles: admin
 
 ###
