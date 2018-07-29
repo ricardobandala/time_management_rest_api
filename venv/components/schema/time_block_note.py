@@ -3,15 +3,15 @@ from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 
 
-class TimeframeNoteModel(DeclarativeBase):
-    __tablename__ = 'timeframe_note'
+class StintNoteModel(DeclarativeBase):
+    __tablename__ = 'stint_note'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
 
     content = Column(String(1024), nullable=True)
 
-    timeframe_id = Column(Integer, ForeignKey('timeframe.id'))
-    timeframe = relationship('Timeframe', back_populates='timeframe_note')
+    stint_id = Column(Integer, ForeignKey('stint.id'))
+    stint = relationship('Stint', back_populates='stint_note')
 
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship('UserModel')

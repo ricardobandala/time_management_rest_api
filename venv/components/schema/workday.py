@@ -15,7 +15,7 @@ class Workday(DeclarativeBase):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship('UserModel', back_populates='workday')
 
-    timeframe = relationship('Timeframe', back_populates='workday')
+    stint = relationship('Stint', back_populates='workday')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())

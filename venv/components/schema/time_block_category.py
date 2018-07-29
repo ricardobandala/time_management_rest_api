@@ -3,8 +3,8 @@ from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 
 
-class TimeframeCategory(DeclarativeBase):
-    __tablename__ = 'timeframe_category'
+class StintCategory(DeclarativeBase):
+    __tablename__ = 'stint_category'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
 

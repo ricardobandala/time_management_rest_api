@@ -14,7 +14,7 @@ class WorkdayModel(DeclarativeBase):
     stop_time = Column(DateTime)
 
     # ONE TO MANY
-    timeframe = relationship('TimeframeModel', back_populates='workday', lazy='noload', uselist=True)
+    stint = relationship('StintModel', back_populates='workday', lazy='noload', uselist=True)
     note = relationship('WorkdayNoteModel', back_populates='workday', lazy='noload', uselist=True)
 
     # MANY TO ONE
@@ -31,7 +31,7 @@ class WorkdayModel(DeclarativeBase):
             id={:d},  
             start_time={}, 
             stop_time={},
-            timeframe={},
+            stint={},
             user_id={:d}, 
             created={} 
             modified={} 
@@ -40,7 +40,7 @@ class WorkdayModel(DeclarativeBase):
             self.id,
             self.start_time,
             self.stop_time,
-            self.timeframe,
+            self.stint,
             self.user_id,
             self.created,
             self.modified,
@@ -53,7 +53,7 @@ class WorkdaySchema(Schema):
     start_time = fields.DateTime()
     stop_time = fields.DateTime()
     # ONE TO MANY
-    timeframe = fields.Nested('TimeframeSchema', many=True)
+    stint = fields.Nested('StintSchema', many=True)
     note = fields.Nested('WorkdayNoteSchema', many=True)
     # MANY TO ONE
     user_id = fields.Integer()

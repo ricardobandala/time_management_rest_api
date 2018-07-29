@@ -4,8 +4,8 @@ from marshmallow import fields, Schema
 from base import DeclarativeBase
 
 
-class TimeframeCategoryModel(DeclarativeBase):
-    __tablename__ = 'timeframe_category'
+class StintCategoryModel(DeclarativeBase):
+    __tablename__ = 'stint_category'
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
@@ -13,9 +13,9 @@ class TimeframeCategoryModel(DeclarativeBase):
     description = Column(String(1024), unique=True)
 
     # MANY TO MANY
-    timeframe = relationship(
-        'TimeframeModel',
-        secondary='assoc_timeframe_timeframe_category',
+    stint = relationship(
+        'StintModel',
+        secondary='assoc_stint_stint_category',
         back_populates='category',
         lazy="noload",
         uselist=True
@@ -27,7 +27,7 @@ class TimeframeCategoryModel(DeclarativeBase):
 
     def __repr__(self):
         return """<
-        TimeframeCategoryModel(
+        StintCategoryModel(
             id={:d}, 
             name={} 
         )>""".format(
@@ -36,12 +36,12 @@ class TimeframeCategoryModel(DeclarativeBase):
         )
 
 
-class TimeframeCategorySchema(Schema):
+class StintCategorySchema(Schema):
     id = fields.Integer()
     name = fields.String()
     description = fields.String()
     # MANY TO MANY
-    timeframe = fields.Nested('TimeframeSchema', many=True)
+    stint = fields.Nested('StintSchema', many=True)
 
     created = fields.DateTime()
     modified = fields.DateTime()

@@ -26,8 +26,8 @@ class UserModel(DeclarativeBase):
     workday = relationship('WorkdayModel', back_populates='user', uselist=True, lazy='noload')
     workday_note = relationship('WorkdayNoteModel', back_populates='user', uselist=True)
 
-    timeframe = relationship('TimeframeModel', back_populates='user', lazy="noload", uselist=True, )
-    timeframe_note = relationship('TimeframeNoteModel', back_populates='user', lazy="noload", uselist=True)
+    stint = relationship('StintModel', back_populates='user', lazy="noload", uselist=True, )
+    stint_note = relationship('StintNoteModel', back_populates='user', lazy="noload", uselist=True)
 
     # MANY TO ONE
     role_id = Column(Integer, ForeignKey('role.id'))
@@ -71,8 +71,8 @@ class UserSchema(Schema):
     # Many Nest
     workday = fields.Nested('WorkdaySchema', many=True)
     workday_note = fields.Nested('WorkdayNoteSchema', many=True)
-    timeframe = fields.Nested('TimeframeSchema', many=True)
-    timeframe_note = fields.Nested('TimeframeNoteSchema', many=True)
+    stint = fields.Nested('StintSchema', many=True)
+    stint_note = fields.Nested('StintNoteSchema', many=True)
 
     created = fields.DateTime()
     modified = fields.DateTime()
