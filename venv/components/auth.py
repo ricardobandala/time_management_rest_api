@@ -4,10 +4,8 @@ from falcon_auth import FalconAuthMiddleware, BasicAuthBackend
 from falcon_policy import RoleBasedPolicy
 from policy import policy_config
 from model.user import UserModel
-from model.role import RoleModel
 from model.credential import CredentialModel
 from db import Database
-from sqlalchemy.orm import contains_eager
 
 session = Database().Session()
 
@@ -62,15 +60,9 @@ class Authorization(object):
         # TODO, how can I modify the header
         # req.headers.update({'X-ROLES': getattr(user.role.name, 'name', '')})
 
-        if not req.get_header('X-Roles', default='') == user.get_role():
+        if not user.get_role() == req.get_header('X-Roles', default=''):
             raise falcon.HTTPForbidden(
                 description='Access to this resource has been restricted'
             )
 
-        RoleBasedPolicy(policy_config).process_resource(
-            req,
-            resp,
-            resource,
-            params
-        )
-
+        RoleBasedPolicy(policy_config).process_resource(req, resp, resource, params)
