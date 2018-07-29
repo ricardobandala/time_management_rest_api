@@ -1,5 +1,6 @@
-from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey
+from sqlalchemy import Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import fields, Schema
 from base import DeclarativeBase
 
 
@@ -16,7 +17,7 @@ class TimeframeCategoryModel(DeclarativeBase):
         'TimeframeModel',
         secondary='assoc_timeframe_timeframe_category',
         back_populates='category',
-        lazy="joined",
+        lazy="noload",
         uselist=True
     )
 
@@ -33,3 +34,15 @@ class TimeframeCategoryModel(DeclarativeBase):
             self.id,
             self.name
         )
+
+
+class TimeframeCategorySchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    description = fields.String()
+    # MANY TO MANY
+    timeframe = fields.Nested('TimeframeSchema', many=True)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()

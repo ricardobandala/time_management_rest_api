@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
+from marshmallow import fields, Schema
 
 
 class IdentityModel(DeclarativeBase):
@@ -11,9 +12,9 @@ class IdentityModel(DeclarativeBase):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     email = Column(String(255))
-
+    # ONE TO ONE
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    user = relationship('UserModel', back_populates='identity', lazy="joined")
+    user = relationship('UserModel', back_populates='identity', lazy="noload")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -40,3 +41,18 @@ class IdentityModel(DeclarativeBase):
             self.modified,
             self.deleted
         )
+
+
+class IdentitySchema(Schema):
+    id = fields.Integer()
+    first_name = fields.String()
+    last_name = fields.String()
+    email = fields.Email()
+    # ONE TO ONE
+    user_id = fields.Integer()
+    user = fields.Nested('UserSchema', many=False)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()
+

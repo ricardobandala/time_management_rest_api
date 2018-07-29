@@ -2,6 +2,7 @@ from datetime import timedelta
 from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
+from marshmallow import fields, Schema
 
 
 class WorkdayModel(DeclarativeBase):
@@ -13,12 +14,12 @@ class WorkdayModel(DeclarativeBase):
     stop_time = Column(DateTime)
 
     # ONE TO MANY
-    timeframe = relationship('TimeframeModel', back_populates='workday', uselist=True)
-    note = relationship('WorkdayNoteModel', back_populates='workday', uselist=True)
+    timeframe = relationship('TimeframeModel', back_populates='workday', lazy='noload', uselist=True)
+    note = relationship('WorkdayNoteModel', back_populates='workday', lazy='noload', uselist=True)
 
     # MANY TO ONE
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('UserModel', back_populates='workday')
+    user = relationship('UserModel', back_populates='workday', lazy='noload', uselist=False)
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -46,3 +47,18 @@ class WorkdayModel(DeclarativeBase):
             self.deleted
         )
 
+
+class WorkdaySchema(Schema):
+    id = fields.Integer()
+    start_time = fields.DateTime()
+    stop_time = fields.DateTime()
+    # ONE TO MANY
+    timeframe = fields.Nested('TimeframeSchema', many=True)
+    note = fields.Nested('WorkdayNoteSchema', many=True)
+    # MANY TO ONE
+    user_id = fields.Integer()
+    user = fields.Nested('UserSchema', many=False)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()

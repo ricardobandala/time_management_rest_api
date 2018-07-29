@@ -19,25 +19,26 @@ class UserModel(DeclarativeBase):
     end_date = Column(DateTime)
 
     # ONE TO ONE
-    credential = relationship('CredentialModel', back_populates='user', lazy="joined", uselist=False)
-    identity = relationship('IdentityModel', back_populates='user', lazy="joined", uselist=False)
+    credential = relationship('CredentialModel', back_populates='user', lazy="noload", uselist=False)
+    identity = relationship('IdentityModel', back_populates='user', lazy="noload", uselist=False)
 
     # ONE TO MANY
-    workday = relationship('WorkdayModel', back_populates='user', uselist=True)
+    workday = relationship('WorkdayModel', back_populates='user', uselist=True, lazy='noload')
     workday_note = relationship('WorkdayNoteModel', back_populates='user', uselist=True)
 
-    timeframe = relationship('TimeframeModel', back_populates='user', uselist=True)
-    timeframe_note = relationship('TimeframeNoteModel', back_populates='user', uselist=True)
+    timeframe = relationship('TimeframeModel', back_populates='user', lazy="noload", uselist=True, )
+    timeframe_note = relationship('TimeframeNoteModel', back_populates='user', lazy="noload", uselist=True)
 
     # MANY TO ONE
     role_id = Column(Integer, ForeignKey('role.id'))
-    role = relationship('RoleModel', back_populates='user', uselist=False)
+    role = relationship('RoleModel', back_populates='user', uselist=False, lazy="noload")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
 
     def get_role(self):
+        # TODO, Am I obscuring through this getter?
         return self.role.title.name
 
     def __repr__(self):
@@ -58,16 +59,20 @@ class UserModel(DeclarativeBase):
 
 
 class UserSchema(Schema):
-
     id = fields.Integer()
     is_active = fields.Boolean()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
-
-    # credential = relationship("CredentialModel', back_populates='user', lazy="joined", uselist=False)
-    # identity = relationship('IdentityModel', back_populates='user', lazy="joined", uselist=False)
-    # workday = relationship('WorkdayModel', back_populates='user')
-    # timeframe = relationship('Timeframe', back_populates='user')
+    # Single Nest
+    credential = fields.Nested('CredentialSchema')
+    identity = fields.Nested('IdentitySchema')
+    role_id = fields.Integer()
+    role = fields.Nested('RoleSchema')
+    # Many Nest
+    workday = fields.Nested('WorkdaySchema', many=True)
+    workday_note = fields.Nested('WorkdayNoteSchema', many=True)
+    timeframe = fields.Nested('TimeframeSchema', many=True)
+    timeframe_note = fields.Nested('TimeframeNoteSchema', many=True)
 
     created = fields.DateTime()
     modified = fields.DateTime()

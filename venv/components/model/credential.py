@@ -1,8 +1,8 @@
 import base64
 from sqlalchemy.event import listen
-from sqlalchemy import Boolean, Column, DateTime, Integer,  ForeignKey, func, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func, String
 from sqlalchemy.orm import relationship
-# from marshmallow import fields, Schema
+from marshmallow import fields, Schema
 from base import DeclarativeBase
 
 
@@ -17,7 +17,7 @@ class CredentialModel(DeclarativeBase):
 
     # ONE TO ONE
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    user = relationship('UserModel', back_populates='credential', lazy="joined")
+    user = relationship('UserModel', back_populates='credential', lazy="noload")
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -33,12 +33,12 @@ class CredentialModel(DeclarativeBase):
             modified={}, 
             deleted={} 
         )>""".format(
-           self.id,
-           self.username,
-           self.is_active,
-           self.created,
-           self.modified,
-           self.deleted
+            self.id,
+            self.username,
+            self.is_active,
+            self.created,
+            self.modified,
+            self.deleted
         )
 
 
@@ -52,15 +52,16 @@ listen(
 )
 
 
+class CredentialSchema(Schema):
+    id = fields.Integer()
+    username = fields.String()
+    password = fields.String()
+    is_active = fields.Boolean()
 
+    # ONE TO ONE
+    user_id = fields.Integer()
+    user = fields.Nested('UserSchema', many=False)
 
-# class CredentialSchema:
-#
-#     id = fields.Integer()
-#     username = fields.String()
-#     password = fields.String()
-#     is_active = fields.Boolean()
-#
-#     created = fields.DateTime()
-#     modified = fields.DateTime()
-#     deleted = fields.DateTime()
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()

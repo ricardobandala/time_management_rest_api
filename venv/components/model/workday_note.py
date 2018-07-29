@@ -1,5 +1,6 @@
 from sqlalchemy import Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import fields, Schema
 from base import DeclarativeBase
 
 
@@ -12,10 +13,10 @@ class WorkdayNoteModel(DeclarativeBase):
 
     # MANY TO ONE
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('WorkdayModel', back_populates='note', uselist=False)
+    workday = relationship('WorkdayModel', back_populates='note', lazy='noload', uselist=False)
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('UserModel', back_populates='workday_note', uselist=False)
+    user = relationship('UserModel', back_populates='workday_note', lazy='noload', uselist=False)
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -41,3 +42,18 @@ class WorkdayNoteModel(DeclarativeBase):
             self.deleted
         )
 
+
+class WorkdayNoteSchema(Schema):
+    id = fields.Integer()
+    content = fields.String()
+
+    # MANY TO ONE
+    workday_id = fields.Integer()
+    workday = fields.Nested('WorkdaySchema', many=False)
+
+    user_id = fields.Integer()
+    user = fields.Nested('UserSchema', many=False)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()

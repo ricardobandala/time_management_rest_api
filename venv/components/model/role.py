@@ -1,6 +1,7 @@
 from base import DeclarativeBase
 from sqlalchemy import Boolean, Column, DateTime, Enum, func, Integer
 from sqlalchemy.orm import relationship
+from marshmallow import fields, Schema
 import enum
 
 
@@ -8,6 +9,7 @@ class RoleName(enum.Enum):
     admin = 'admin'
     reporter = 'reporter'
     observer = 'observer'
+
 
 # TODO, check why this is not working, implementation as described in the docs
 def enum_values(enum_class):
@@ -21,8 +23,8 @@ class RoleModel(DeclarativeBase):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(Enum(RoleName, values_callable=enum_values), unique=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
-
-    user = relationship('UserModel', back_populates='role')
+    # MANY TO ONE
+    user = relationship('UserModel', back_populates='role', lazy='noload')
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -41,3 +43,15 @@ class RoleModel(DeclarativeBase):
             self.modified,
             self.deleted
         )
+
+
+class RoleSchema(Schema):
+    id = fields.Integer()
+    title = fields.String()
+    is_active = fields.Boolean()
+    # MANY TO ONE
+    user = fields.Nested('UserSchema', many=True)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()

@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
+from marshmallow import fields, Schema
 
 
 class TimeframeModel(DeclarativeBase):
@@ -14,14 +15,14 @@ class TimeframeModel(DeclarativeBase):
     failed = Column(Boolean)
 
     # ONE TO MANY
-    note = relationship('TimeframeNoteModel', back_populates='timeframe', uselist=True)
+    note = relationship('TimeframeNoteModel', back_populates='timeframe', uselist=True, lazy='noload')
 
     # MANY TO ONE
     workday_id = Column(Integer, ForeignKey('workday.id'))
-    workday = relationship('WorkdayModel', back_populates='timeframe')
+    workday = relationship('WorkdayModel', back_populates='timeframe', uselist=False, lazy='noload')
 
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship('UserModel', back_populates='timeframe')
+    user = relationship('UserModel', back_populates='timeframe', uselist=False, lazy='noload')
 
     # MANY TO MANY
     category = relationship(
@@ -58,3 +59,24 @@ class TimeframeModel(DeclarativeBase):
             self.deleted
         )
 
+
+class TimeframeSchema(Schema):
+    id = fields.Integer()
+    start_time = fields.DateTime()
+    stop_time = fields.DateTime()
+    interruptions = fields.Integer()
+    failed = fields.Boolean()
+
+    # ONE TO MANY
+    note = fields.Nested('TimeframeNoteSchema', many=True)
+    # MANY TO ONE
+    workday_id = fields.Integer()
+    workday = fields.Nested('WorkdaySchema', many=False)
+    user_id = fields.Integer()
+    user = fields.Nested('UserSchema', many=False)
+    # MANY TO MANY
+    category = fields.Nested('TimeframeCategorySchema', many=True)
+
+    created = fields.DateTime()
+    modified = fields.DateTime()
+    deleted = fields.DateTime()
