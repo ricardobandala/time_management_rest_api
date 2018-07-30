@@ -2,7 +2,7 @@ from datetime import timedelta
 from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 
 
 class WorkdayModel(DeclarativeBase):
@@ -49,7 +49,7 @@ class WorkdayModel(DeclarativeBase):
 
 
 class WorkdaySchema(Schema):
-    id = fields.Integer()
+    id = fields.Integer(dump_only=True)
     start_time = fields.DateTime()
     stop_time = fields.DateTime()
     # ONE TO MANY
@@ -59,6 +59,11 @@ class WorkdaySchema(Schema):
     user_id = fields.Integer()
     user = fields.Nested('UserSchema', many=False)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return WorkdayModel(**data)
+

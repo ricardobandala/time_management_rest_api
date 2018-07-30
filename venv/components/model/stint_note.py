@@ -1,6 +1,6 @@
 from sqlalchemy import Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 from base import DeclarativeBase
 
 
@@ -45,7 +45,7 @@ class StintNoteModel(DeclarativeBase):
 
 class StintNoteSchema(Schema):
 
-    id = fields.Integer()
+    id = fields.Integer(dump_only=True)
     content = fields.String()
     # MANY TO ONE
     stint_id = fields.Integer()
@@ -53,6 +53,10 @@ class StintNoteSchema(Schema):
     user_id = fields.Integer()
     user = fields.Nested('UserSchema', many=False)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return StintNoteModel(**data)

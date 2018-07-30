@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema, validates
 
 
 class IdentityModel(DeclarativeBase):
@@ -44,15 +44,19 @@ class IdentityModel(DeclarativeBase):
 
 
 class IdentitySchema(Schema):
-    id = fields.Integer()
-    first_name = fields.String()
-    last_name = fields.String()
-    email = fields.Email()
+    id = fields.Integer(dump_only=True)
+    first_name = fields.String(required=True)
+    last_name = fields.String(required=True)
+    email = fields.Email(required=True)
     # ONE TO ONE
-    user_id = fields.Integer()
+    user_id = fields.Integer(required=True)
     user = fields.Nested('UserSchema', many=False)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return IdentityModel(**data)
 

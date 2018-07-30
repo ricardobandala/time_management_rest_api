@@ -1,7 +1,7 @@
 from base import DeclarativeBase
 from sqlalchemy import Boolean, Column, DateTime, Enum, func, Integer
 from sqlalchemy.orm import relationship
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 import enum
 
 
@@ -46,12 +46,16 @@ class RoleModel(DeclarativeBase):
 
 
 class RoleSchema(Schema):
-    id = fields.Integer()
+    id = fields.Integer(dump_only=True)
     title = fields.String()
     is_active = fields.Boolean()
     # MANY TO ONE
     user = fields.Nested('UserSchema', many=True)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return RoleModel(**data)

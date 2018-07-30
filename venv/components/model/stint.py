@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
 from base import DeclarativeBase
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 
 
 class StintModel(DeclarativeBase):
@@ -68,7 +68,7 @@ class StintModel(DeclarativeBase):
 
 
 class StintSchema(Schema):
-    id = fields.Integer()
+    id = fields.Integer(dump_only=True)
     start_time = fields.DateTime()
     stop_time = fields.DateTime()
     interruptions = fields.Integer()
@@ -84,6 +84,10 @@ class StintSchema(Schema):
     # MANY TO MANY
     category = fields.Nested('StintCategorySchema', many=True)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return StintModel(**data)

@@ -1,8 +1,7 @@
-import base64
 from base import DeclarativeBase
 from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func
 from sqlalchemy.orm import relationship
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 
 """
 User is actually a UserApplication, but we tried to avoid verbosity
@@ -19,6 +18,7 @@ class UserModel(DeclarativeBase):
     end_date = Column(DateTime)
 
     # ONE TO ONE
+    # TODO, credential_id and identity_id, dont forget to update Schema and Resource
     credential = relationship('CredentialModel', back_populates='user', lazy="noload", uselist=False)
     identity = relationship('IdentityModel', back_populates='user', lazy="noload", uselist=False)
 
@@ -59,7 +59,7 @@ class UserModel(DeclarativeBase):
 
 
 class UserSchema(Schema):
-    id = fields.Integer()
+    id = fields.Integer(dump_only=True)
     is_active = fields.Boolean()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
@@ -74,6 +74,10 @@ class UserSchema(Schema):
     stint = fields.Nested('StintSchema', many=True)
     stint_note = fields.Nested('StintNoteSchema', many=True)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return UserModel(**data)

@@ -2,7 +2,7 @@ import base64
 from sqlalchemy.event import listen
 from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func, String
 from sqlalchemy.orm import relationship
-from marshmallow import fields, Schema
+from marshmallow import fields, post_load, Schema
 from base import DeclarativeBase
 
 
@@ -53,15 +53,19 @@ listen(
 
 
 class CredentialSchema(Schema):
-    id = fields.Integer()
-    username = fields.String()
+    id = fields.Integer(dump_only=True)
+    username = fields.String(required=True)
     password = fields.String()
     is_active = fields.Boolean()
 
     # ONE TO ONE
-    user_id = fields.Integer()
+    user_id = fields.Integer(required=True)
     user = fields.Nested('UserSchema', many=False)
 
-    created = fields.DateTime()
-    modified = fields.DateTime()
+    created = fields.DateTime(dump_only=True)
+    modified = fields.DateTime(dump_only=True)
     deleted = fields.DateTime()
+
+    @post_load
+    def create_model(self, _model, data):
+        return CredentialModel(**data)
