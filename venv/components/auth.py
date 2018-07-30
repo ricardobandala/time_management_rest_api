@@ -2,7 +2,8 @@ import base64
 import falcon
 from falcon_auth import FalconAuthMiddleware, BasicAuthBackend
 from falcon_policy import RoleBasedPolicy
-from policy import policy_config
+from sqlalchemy.orm import joinedload, raiseload
+from policy.config import policy_definition
 from model.user import UserModel
 from model.credential import CredentialModel
 from db import Database
@@ -38,7 +39,7 @@ class Authentication(object):
             credential = session.query(CredentialModel.user_id).filter(
                 CredentialModel.username == username,
                 CredentialModel.password == base64.b64encode(password.encode('utf-8'))
-            ).one()
+            ).options(raiseload('*')).one()
 
             return credential
 
@@ -53,7 +54,10 @@ class Authorization(object):
 
     def process_resource(self, req, resp, resource, params):
 
-        user = req.context['session'].query(UserModel).filter(
+        query = req.context['session'].query(UserModel)\
+            .options(joinedload(UserModel.role), raiseload('*'))
+
+        user = query.filter(
             UserModel.id == req.context['user'].user_id
         ).one_or_none()
 
@@ -64,5 +68,8 @@ class Authorization(object):
             raise falcon.HTTPForbidden(
                 description='Access to this resource has been restricted'
             )
+        else:
+            req.context['user_role'] = user.get_role()
 
-        RoleBasedPolicy(policy_config).process_resource(req, resp, resource, params)
+        RoleBasedPolicy(policy_definition).process_resource(req, resp, resource, params)
+

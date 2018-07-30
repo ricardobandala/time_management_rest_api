@@ -22,5 +22,10 @@ class App(falcon.API):
             self.authorize
         ])
 
-        self.add_route('/user/{user_id:int}', user.Item())
-        self.add_route('/user/', user.Item())
+        self.add_route('/api/user/', user.Item())
+        self.add_route('/api/user/{user_id:int}', user.Item())
+        self.add_route('/api/user/profile/', user.Item())
+        self.add_route('/api/user/profile/{user_id:int}', user.Item())
+        self.add_route('/api/user/identity/{user_id:int}', user.Item())
+        self.add_route('/api/user/profile/identity/{user_id:int}', user.Item())
+
