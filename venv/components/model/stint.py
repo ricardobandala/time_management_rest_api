@@ -1,7 +1,9 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, func, ForeignKey
-from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 from marshmallow import fields, post_load, Schema
+from model.assoc_stint_stint_category import table as assoc_stint_stint_category_table
+from sqlalchemy import Boolean, Column, DateTime, Integer, func, ForeignKey
+from sqlalchemy.orm import relationship
+
 
 
 class StintModel(DeclarativeBase):
@@ -22,21 +24,26 @@ class StintModel(DeclarativeBase):
     failed = Column(Boolean)
 
     # ONE TO MANY
-    note = relationship('StintNoteModel', back_populates='stint', uselist=True, lazy='noload')
+    note = relationship(
+        'StintNoteModel',
+        back_populates='stint',
+        uselist=True,
+        lazy='noload'
+    )
 
     # MANY TO ONE
-    workday_id = Column(Integer, ForeignKey('workday.id'))
+    workday_id = Column(Integer, ForeignKey('workday.id'), nullable=False, index=True)
     workday = relationship('WorkdayModel', back_populates='stint', uselist=False, lazy='noload')
 
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False, index=True)
     user = relationship('UserModel', back_populates='stint', uselist=False, lazy='noload')
 
     # MANY TO MANY
     category = relationship(
         'StintCategoryModel',
-        secondary='assoc_stint_stint_category',
         back_populates='stint',
-        lazy="joined",
+        secondary=assoc_stint_stint_category_table,
+        lazy="noload",
         uselist=True
     )
 

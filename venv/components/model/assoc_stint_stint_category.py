@@ -1,21 +1,11 @@
-from sqlalchemy import Column, Integer,  ForeignKey
 from base import DeclarativeBase
+from sqlalchemy import Column, Integer,  ForeignKey, Table
 
 
 # Association table
-class StintStintCategoryModel(DeclarativeBase):
-    __tablename__ = 'assoc_stint_stint_category'
-    __table_args__ = {'extend_existing': True}
-
-    stint_id = Column(Integer, ForeignKey('stint.id'), primary_key=True)
-    stint_category_id = Column(Integer, ForeignKey('stint_category.id'), primary_key=True)
-
-    def __repr__(self):
-        return """
-        <StintStintCategoryModel(
-            stint_id={:d}, 
-            stint_category_id={:d})>
-        """.format(
-            self.stint_id,
-            self.stint_category_id
-        )
+table = Table(
+    'assoc_stint_stint_category',
+    DeclarativeBase.metadata,
+    Column('stint_id', Integer, ForeignKey('stint.id')),
+    Column('stint_category_id', Integer, ForeignKey('stint_category.id'))
+)

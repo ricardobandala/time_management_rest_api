@@ -1,7 +1,8 @@
 from base import DeclarativeBase
+from marshmallow import fields, post_load, Schema
+from model.assoc_user_role import table as assoc_user_role_table
 from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func
 from sqlalchemy.orm import relationship
-from marshmallow import fields, post_load, Schema
 
 """
 User is actually a UserApplication, but we tried to avoid verbosity
@@ -29,9 +30,13 @@ class UserModel(DeclarativeBase):
     stint = relationship('StintModel', back_populates='user', lazy="noload", uselist=True, )
     stint_note = relationship('StintNoteModel', back_populates='user', lazy="noload", uselist=True)
 
-    # MANY TO ONE
-    role_id = Column(Integer, ForeignKey('role.id'))
-    role = relationship('RoleModel', back_populates='user', uselist=False, lazy="noload")
+    # MANY TO MANY
+    role = relationship(
+        'RoleModel',
+        back_populates='user',
+        secondary=assoc_user_role_table,
+        lazy="noload"
+    )
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
@@ -43,19 +48,15 @@ class UserModel(DeclarativeBase):
 
     def __repr__(self):
         return """" <UserModel(
-                id={:d}, 
-                is_active={}, 
-                start_date={},
-                end_date={},
-                created={}, modified={}, deleted={})>)""".format(
-            self.id,
-            self.is_active,
-            self.start_date,
-            self.end_date,
-            self.created,
-            self.modified,
-            self.deleted
-        )
+                id={self.id}, 
+                is_active={self.is_active},
+                role={self.role}, 
+                start_date={self.start_date},
+                end_date={self.end_date},
+                created={self.created}, 
+                modified={self.modified}, 
+                deleted={self.delete})>)
+                """.format(self=self).strip('\n')
 
 
 class UserSchema(Schema):
@@ -79,5 +80,5 @@ class UserSchema(Schema):
     deleted = fields.DateTime()
 
     @post_load
-    def create_model(self, _model, data):
+    def create_model(self, data):
         return UserModel(**data)

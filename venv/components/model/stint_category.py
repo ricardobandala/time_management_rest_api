@@ -1,7 +1,7 @@
+from base import DeclarativeBase
+from marshmallow import fields, post_load, Schema
 from sqlalchemy import Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import fields, post_load, Schema
-from base import DeclarativeBase
 
 
 class StintCategoryModel(DeclarativeBase):

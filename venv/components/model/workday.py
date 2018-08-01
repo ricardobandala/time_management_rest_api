@@ -1,8 +1,7 @@
-from datetime import timedelta
-from sqlalchemy import Boolean, Column, DateTime, String, Integer, func, ForeignKey
-from sqlalchemy.orm import relationship
 from base import DeclarativeBase
 from marshmallow import fields, post_load, Schema
+from sqlalchemy import Column, DateTime, Integer, func, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class WorkdayModel(DeclarativeBase):
@@ -18,7 +17,7 @@ class WorkdayModel(DeclarativeBase):
     note = relationship('WorkdayNoteModel', back_populates='workday', lazy='noload', uselist=True)
 
     # MANY TO ONE
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False, index=True)
     user = relationship('UserModel', back_populates='workday', lazy='noload', uselist=False)
 
     created = Column(DateTime, default=func.now())

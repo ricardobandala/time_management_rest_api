@@ -1,8 +1,10 @@
 from base import DeclarativeBase
+import enum
+from marshmallow import fields, post_load, Schema
 from sqlalchemy import Boolean, Column, DateTime, Enum, func, Integer
 from sqlalchemy.orm import relationship
-from marshmallow import fields, post_load, Schema
-import enum
+
+from model.assoc_user_role import table as assoc_user_role_table
 
 
 class RoleName(enum.Enum):
@@ -23,26 +25,28 @@ class RoleModel(DeclarativeBase):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(Enum(RoleName, values_callable=enum_values), unique=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+
     # MANY TO ONE
-    user = relationship('UserModel', back_populates='role', lazy='noload')
+    user = relationship(
+        'UserModel',
+        back_populates='role',
+        secondary=assoc_user_role_table,
+        lazy='noload'
+    )
 
     created = Column(DateTime, default=func.now())
     modified = Column(DateTime, onupdate=func.now())
     deleted = Column(DateTime)
 
     def __repr__(self):
-        return (
-            "< RoleModel("
-            "id={:d}, name={}, is_active={}, "
-            "created={}, modified={}, deleted={})>"
-        ).format(
-            self.id,
-            self.name,
-            self.is_active,
-            self.created,
-            self.modified,
-            self.deleted
-        )
+        return """< RoleModel(
+            id={self.id},
+            title={self.title}, 
+            is_active={self.is_active},
+            created={self.created}, 
+            modified={self.modified}, 
+            deleted={self.deleted})>
+            """.format(self=self).strip('\n')
 
 
 class RoleSchema(Schema):

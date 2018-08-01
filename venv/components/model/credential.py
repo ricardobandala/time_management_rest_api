@@ -1,9 +1,9 @@
-import base64
-from sqlalchemy.event import listen
-from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func, String
-from sqlalchemy.orm import relationship
-from marshmallow import fields, post_load, Schema
 from base import DeclarativeBase
+import base64
+from marshmallow import fields, post_load, Schema
+from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func, String
+from sqlalchemy.event import listen
+from sqlalchemy.orm import relationship
 
 
 class CredentialModel(DeclarativeBase):
@@ -16,7 +16,7 @@ class CredentialModel(DeclarativeBase):
     is_active = Column(Boolean, default=0)
 
     # ONE TO ONE
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False, index=True)
     user = relationship('UserModel', back_populates='credential', lazy="noload")
 
     created = Column(DateTime, default=func.now())

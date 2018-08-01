@@ -1,7 +1,7 @@
+from base import DeclarativeBase
+from marshmallow import fields, post_load, Schema
 from sqlalchemy import Column, DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import fields, post_load, Schema
-from base import DeclarativeBase
 
 
 class WorkdayNoteModel(DeclarativeBase):
@@ -12,10 +12,10 @@ class WorkdayNoteModel(DeclarativeBase):
     content = Column(String(1024), nullable=True)
 
     # MANY TO ONE
-    workday_id = Column(Integer, ForeignKey('workday.id'))
+    workday_id = Column(Integer, ForeignKey('workday.id'), nullable=False, index=True)
     workday = relationship('WorkdayModel', back_populates='note', lazy='noload', uselist=False)
 
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False, index=True)
     user = relationship('UserModel', back_populates='workday_note', lazy='noload', uselist=False)
 
     created = Column(DateTime, default=func.now())
