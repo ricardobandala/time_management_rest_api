@@ -77,40 +77,6 @@ permissions = {
                 ['POST'],
             '/api/user/{user_id:int}/workdays/stints/{stint_id:int}/notes/{note_id:int}':
                 ['GET', 'PUT', 'DELETE'],
-        },
-        'deny': {
-            '/api/admin/*':
-                ['*'],
-            '/api/user':
-                ['*'],
-            '/api/user/{user_id:int}':
-                ['DELETE'],
-            '/api/users/*':
-                ['*'],
-            # credential
-            '*/credential':
-                ['POST'],
-            '*/credential/{credential_id:int}':
-                ['DELETE'],
-            # identity
-            '*/profile/{profile_id:int}':
-                ['DELETE'],
-            # workday
-            '*/workday/{workday_id:int}':
-                ['DELETE'],
-            '*/workday/{start_time:dt("%Y-%m-%d")}}':
-                ['DELETE'],
-            '/api/api/workdays':
-                ['*'],
-            '*/workdays':
-                ['POST', 'DELETE'],
-            # stint
-            '*/stint/{stint_id:int}':
-                ['DELETE'],
-            '/api/stints':
-                ['*'],
-            '*/stints':
-                ['POST', 'DELETE'],
         }
     },
     'observer_policy': {
