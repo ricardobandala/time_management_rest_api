@@ -9,8 +9,13 @@ def error_handler(ex, req, resp, params):
 if __name__ == '__main__':
 
     application = App()
-    application.add_error_handler(Exception, error_handler)
 
-    server = make_server('localhost', 8181, application)
-    print('serving on 8181')
+    # TODO this is the place ehere you cna access all th registered routes
+    # we can run a routine to check the uri_templates against our policies
+    # wala = application._router._return_values
+
+    application.add_error_handler(Exception, error_handler)
+    port = 8181
+    server = make_server('localhost', port, application)
+    print('serving on {:d}'.format(port))
     server.serve_forever()
