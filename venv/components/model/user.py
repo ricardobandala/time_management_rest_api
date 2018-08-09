@@ -1,7 +1,7 @@
 from base import DeclarativeBase
 from marshmallow import fields, post_load, Schema
 from model.assoc_user_role import table as assoc_user_role_table
-from sqlalchemy import Boolean, Column, DateTime, Integer, ForeignKey, func
+from sqlalchemy import Boolean, Column, DateTime, Integer, func
 from sqlalchemy.orm import relationship
 
 """
@@ -43,20 +43,23 @@ class UserModel(DeclarativeBase):
     deleted = Column(DateTime)
 
     def get_role(self):
-        # TODO, Am I obscuring through this getter?
-        return self.role.title.name
+        return [r.title.name for r in self.role]
 
     def __repr__(self):
-        return """" <UserModel(
-                id={self.id}, 
-                is_active={self.is_active},
-                role={self.role}, 
-                start_date={self.start_date},
-                end_date={self.end_date},
-                created={self.created}, 
-                modified={self.modified}, 
-                deleted={self.delete})>)
-                """.format(self=self).strip('\n')
+        repr_txt = """" 
+        <UserModel(
+            id={self.id}, 
+            is_active={self.is_active},
+            role={self.role}, 
+            start_date={self.start_date},
+            end_date={self.end_date},
+            created={self.created}, 
+            modified={self.modified}, 
+            deleted={self.deleted})>)
+        """.strip().replace('\n', ' ')
+        return repr_txt.format(self=self)
+
+
 
 
 class UserSchema(Schema):
