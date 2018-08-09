@@ -4,19 +4,17 @@
 # * 'gtrp' and 'gtr' create a GET request with or without query parameters;
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-#
-#GET http://localhost:8181/user/1
-#Accept: application/json
-#Authorization: Basic cmljYXJkb2JhbmRhbGE6MTIzNDU2Nzg5
-#X-Roles: reporter
 
-
-#
-GET http://localhost:8181/api/admin/user/1
+POST http://localhost:8181/api/user
 Accept: application/json
 Authorization: Basic bGVpZ2hyaWNobWFuOjk4NzY1NDMyMQ==
+Content-Type: application/json
 X-Roles: admin
-#Authorization: Basic cmljYXJkb2JhbmRhbGE6MTIzNDU2Nzg5
-#X-Roles: reporter
+
+{
+    "is_active": 1,
+    "start_date": "2018-10-01T00:00:01Z",
+    "end_date": "2019-12-31T23:59:59Z"
+}
 
 ###
