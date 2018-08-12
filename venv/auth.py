@@ -133,20 +133,27 @@ class Authorization(object):
 
     def test_permissions(self, user_permissions, uri_template, request_method):
 
+        # Get allow and deny from all the permissions in separate lists
         allow = dict()
         deny = dict()
-        for up in user_permissions:
-            for upk, upv in up.items():
-                if upk == 'allow':
-                    allow.update(upv)
-                if upk == 'deny':
-                    deny.update(upv)
+        [
+            allow.update(upv) if upk == 'allow'
+            else deny.update(upv) if upk == 'deny'
+            else None
+            for up in user_permissions for upk, upv in up.items()
+        ]
 
-        permissions = {k: v for k, v in allow.items() if k not in deny}
+        """ 
+        Star means all methods, therefore when present it has to be the only one in the array ['*'] "
+        the first iteration is to test for explicit denial on route or method
+        the second iteration is to test for explicit approval on route or method
+        """
+        if any([
+            re.search(route, uri_template) and ('*' in methods or request_method in methods) for route, methods in
+                deny.items()]):
+            raise falcon.HTTPForbidden()
 
-        for permission, methods in permissions.items():
-            if re.match(permission, uri_template):
-                if '*' in methods or request_method in methods:
-                    return True
-                else:
-                    raise falcon.HTTPForbidden()
+        if not any([
+            re.search(route, uri_template) and ('*' in methods or request_method in methods) for route, methods in
+                deny.items()]):
+            raise falcon.HTTPForbidden()
