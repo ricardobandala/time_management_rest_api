@@ -57,5 +57,5 @@ class StintNoteSchema(Schema):
     deleted = fields.DateTime()
 
     @post_load
-    def create_model(self, _model, data):
+    def create_model(self, data):
         return StintNoteModel(**data)
