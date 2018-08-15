@@ -1,14 +1,15 @@
 from base import DeclarativeBase
 from marshmallow import fields, post_load, Schema
-from sqlalchemy import Column, DateTime, Integer, func, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, func, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
+import pytz
 
 
 class WorkdayModel(DeclarativeBase):
     __tablename__ = 'workday'
     __table_args__ = {'extend_existing': True}
     id = Column(Integer, primary_key=True)
-    start_time = Column(DateTime, default=func.now(), nullable=False)
+    start_time = Column(DateTime, default=func.now(tz=pytz.UTC), nullable=False)
     # TODO, how to do dateadd in SQLite
     stop_time = Column(DateTime)
 
@@ -20,8 +21,8 @@ class WorkdayModel(DeclarativeBase):
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False, index=True)
     user = relationship('UserModel', back_populates='workday', lazy='noload', uselist=False)
 
-    created = Column(DateTime, default=func.now())
-    modified = Column(DateTime, onupdate=func.now())
+    created = Column(DateTime, default=func.now(tz=pytz.UTC))
+    modified = Column(DateTime, onupdate=func.now(tz=pytz.UTC))
     deleted = Column(DateTime)
 
     def __repr__(self):
@@ -63,6 +64,6 @@ class WorkdaySchema(Schema):
     deleted = fields.DateTime()
 
     @post_load
-    def create_model(self, _model, data):
+    def create_model(self, data):
         return WorkdayModel(**data)
 
