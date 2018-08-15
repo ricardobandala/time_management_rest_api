@@ -155,5 +155,5 @@ class Authorization(object):
 
         if not any([
             re.search(route, uri_template) and ('*' in methods or request_method in methods) for route, methods in
-                deny.items()]):
+                allow.items()]):
             raise falcon.HTTPForbidden()
