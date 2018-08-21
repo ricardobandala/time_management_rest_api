@@ -4,7 +4,7 @@ from db import Database
 import falcon
 from auth_policy import roles as app_roles, groups as app_groups, permissions as app_permissions
 # Resources for routes
-from resource import user, identity, login, wala, checkin, stint, stint
+from resource import user, identity, auth, wala, checkin, stint, stint
 
 
 class App(falcon.API):
@@ -41,7 +41,8 @@ class App(falcon.API):
             self.authorize
         ])
 
-        self.add_route(self.authenticate_route, login.LoginItem())
+        self.add_route(self.authenticate_route, auth.TokenItem())
+        self.add_route('api/handshake', auth.TokenItem())
         self.add_route('/api/user/check-in', checkin.Item())
         self.add_route('/api/user/workday/{workday_id:int}', stint.Item())
         self.add_route('/api/user/stints/{workday_id:int}', stint.Item())

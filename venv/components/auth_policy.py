@@ -12,6 +12,7 @@ groups = {
 }
 
 permissions = {
+    'excluded'
     'admin_policy': {
         'version': '2018-07-31',
         'allow': {

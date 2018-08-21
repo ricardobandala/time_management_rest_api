@@ -47,7 +47,7 @@ class Authentication(object):
 
 
 class TokenHandler(object):
-    def __init__(self, login_route:str, key:str, headers:dict, minutes_lifespan:int, permission_handler):
+    def __init__(self, login_route:str, key:str, headers: dict, minutes_lifespan:int, permission_handler):
         self.login_route = login_route
         self.key = key
         self.headers = headers
